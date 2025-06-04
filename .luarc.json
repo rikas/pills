@@ -1,0 +1,13 @@
+{
+  "diagnostics": {
+    "enable": true,
+    "globals": ["love"],
+    "neededFileStatus": {
+      "type-check": "Any"
+    }
+  },
+  "type": {
+    "castNumberToInteger": true,
+    "weakUnionCheck": true
+  }
+}
