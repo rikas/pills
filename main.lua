@@ -1,3 +1,4 @@
+require('globals')
 require('textures')
 
 local Utils = require('utils')
@@ -5,13 +6,6 @@ local MainMenuScene = require('scenes/main_menu_scene')
 local GameScene = require('scenes/game_scene')
 local Pill = require('pill')
 
-PlayField = {
-   WIDTH = 8,
-   HEIGHT = 16,
-   matrix = {},
-}
-
-SCALE_FACTOR = 4 -- Scale factor for the game canvas
 gameCanvas = nil
 
 function love.load()
@@ -78,5 +72,5 @@ function love.draw()
    game_scene:draw()
 
    love.graphics.setCanvas()
-   love.graphics.draw(gameCanvas, 0, 0, 0, SCALE_FACTOR, SCALE_FACTOR)
+   love.graphics.draw(gameCanvas, 0, 0, 0, Game.SCALE_FACTOR, Game.SCALE_FACTOR)
 end

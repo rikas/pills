@@ -26,7 +26,7 @@ function Sprite:draw()
 
    local posX, posY = self:getPosition()
 
-   love.graphics.draw(self.spriteSheet, self.quad, posX, posY)
+   love.graphics.draw(self.spriteSheet, self.quad, posX, posY, self:getRotation())
 end
 
 return Sprite

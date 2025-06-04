@@ -1,4 +1,4 @@
-_RELEASE_MODE = false -- Set to true when building for release
+require('globals')
 
 function love.conf(t)
    t.window.title = 'Hospital Madness'
@@ -8,7 +8,7 @@ function love.conf(t)
    t.window.vsync = 1
    t.window.highdpi = true -- Enable high-dpi mode for the window on a Retina display (boolean)
 
-   t.console = not _RELEASE_MODE -- Enable console for debugging on Windows
+   t.console = not Game.RELEASE_MODE -- Enable console for debugging on Windows
 
    t.modules.audio = true
    t.modules.data = true

@@ -1,30 +1,11 @@
 local Utils = require('utils')
 local GameObject = require('engine/game_object')
 local Pill = require('pill')
+local Capsule = require('capsule')
 
 ---@class Playfield:GameObject
 ---@field matrix MatrixCell[][] The matrix representing the playfield.
 local Playfield = class(GameObject)
-
----@enum CellColor
-local CellColor = {
-   EMPTY = 0,
-   YELLOW = 1,
-   RED = 2,
-   BLUE = 3,
-}
-
----@enum PillConnection
-local PillConnection = {
-   NONE = 0,
-   LEFT = 1,
-   RIGHT = 2,
-   TOP = 3,
-   BOTTOM = 4,
-}
-
-MATRIX_ROWS = 16
-MATRIX_COLUMNS = 8
 
 ---@type MatrixCell
 BASE_CELL = {
@@ -40,8 +21,8 @@ function Playfield:init()
    print('Playfield init')
    self.texture = Textures.playfield
 
-   local screenW = love.graphics.getWidth() / SCALE_FACTOR
-   local screenH = love.graphics.getHeight() / SCALE_FACTOR
+   local screenW = love.graphics.getWidth() / Game.SCALE_FACTOR
+   local screenH = love.graphics.getHeight() / Game.SCALE_FACTOR
 
    local width = self.texture.width
    local height = self.texture.height
@@ -57,19 +38,27 @@ function Playfield:init()
       name = 'Playfield',
    })
 
-   self.pillCollection = {
+   self.pillPool = {
       [CellColor.YELLOW] = Pill.new(0, 0, CellColor.YELLOW),
       [CellColor.RED] = Pill.new(0, 0, CellColor.RED),
       [CellColor.BLUE] = Pill.new(0, 0, CellColor.BLUE),
    }
 
-   self.matrix = Utils.generate_matrix(MATRIX_ROWS, MATRIX_COLUMNS, BASE_CELL)
+   self.capsulePool = {}
+
+   local colors = { CellColor.RED, CellColor.BLUE, CellColor.YELLOW }
+
+   -- Generate all possible combinations
+   for _, color1 in ipairs(colors) do
+      for _, color2 in ipairs(colors) do
+         local key = color1 .. '_' .. color2
+         self.capsulePool[key] = Capsule.new(0, 0, { color1, color2 })
+      end
+   end
+
+   self.matrix = Utils.generate_matrix(Game.MATRIX_ROWS, Game.MATRIX_COLUMNS, BASE_CELL)
 
    self.matrix[1][1] = {
-      color = CellColor.YELLOW,
-      connection = PillConnection.NONE,
-   }
-   self.matrix[2][2] = {
       color = CellColor.YELLOW,
       connection = PillConnection.NONE,
    }
@@ -79,13 +68,22 @@ function Playfield:init()
    }
    self.matrix[16][1] = {
       color = CellColor.BLUE,
-      connection = PillConnection.NONE,
+      connection = PillConnection.RIGHT,
+   }
+   self.matrix[16][2] = {
+      color = CellColor.RED,
+      connection = PillConnection.LEFT,
    }
    self.fallTimer = 0
-   self.fallSpeed = 0.15 -- Speed at which pills fall (in seconds)
-   self.fallAnimationTime = 0.1
+   self.fallSpeed = 0.1 -- Speed at which pills fall (shorter is faster)
+   self.fallAnimationTime = 0.1 -- Time it takes for a pill to fall one cell
    self.fallingPills = {}
    print('Playfield loaded')
+end
+
+---@return string capsuleKey
+function Playfield:getCapsuleKey(color1, color2)
+   return color1 .. '_' .. color2
 end
 
 ---@return boolean
@@ -99,7 +97,7 @@ function Playfield:shouldPillFall(row, col)
 
    -- Single pill, simple check - the cell below should be empty
    if cell.connection == PillConnection.NONE then
-      if row < MATRIX_ROWS then
+      if row < Game.MATRIX_ROWS then
          local cellBellow = self.matrix[row + 1] and self.matrix[row + 1][col]
          return cellBellow.color == CellColor.EMPTY
       end
@@ -115,13 +113,14 @@ function Playfield:shouldPillFall(row, col)
          return false
       end
 
-      local canFallThis = row < MATRIX_ROWS and self:isEmpty(row + 1, col)
-      local canFallPartner = partnerRow < MATRIX_ROWS and self:isEmpty(partnerRow + 1, partnerCol)
+      local canFallThis = row < Game.MATRIX_ROWS and self:isEmpty(row + 1, col)
+      local canFallPartner = partnerRow < Game.MATRIX_ROWS
+         and self:isEmpty(partnerRow + 1, partnerCol)
 
       return canFallThis and canFallPartner
    elseif cell.connection == PillConnection.TOP then
       local bottomRow, bottomCol = self:getConnectedCell(row, col)
-      return bottomRow < MATRIX_ROWS and self:isEmpty(bottomRow + 1, bottomCol)
+      return bottomRow < Game.MATRIX_ROWS and self:isEmpty(bottomRow + 1, bottomCol)
    end
 
    return false
@@ -245,45 +244,65 @@ function Playfield:breakConnection(row, col)
    end
 end
 
-function Playfield:drawSinglePill(row, col, color)
+---@return number posX X posistion on the screen for given row
+---@return number posY Y position on the screen for given column
+function Playfield:getRelativePosition(row, col)
    local fieldX, fieldY = self:getPosition()
-
    local posX = fieldX + ((col - 1) * 7) + col
    local posY = fieldY + ((row - 1) * 7) + row
 
-   local pill = self.pillCollection[color]
-   pill:setPosition(posX, posY)
+   return posX, posY
+end
+
+function Playfield:drawSinglePill(row, col, color)
+   local relativeX, relativeY = self:getRelativePosition(row, col)
+
+   local pill = self.pillPool[color]
+   pill:setPosition(relativeX, relativeY)
    pill:draw()
 end
 
-local function drawConnectedPill(row, col, color, connection)
-   -- local posX = (col - 1) * 16 + 8
-   -- local posY = (row - 1) * 16 + 8
-   --
-   -- love.graphics.setColor(1, 1, 1) -- Reset color to white
-   -- love.graphics.draw(
-   --    Textures.capsules.image,
-   --    Textures.capsules.quads[color][connection],
-   --    posX,
-   --    posY,
-   --    0,
-   -- )
+function Playfield:drawCapsule(row, col, cell)
+   local relativeX, relativeY = self:getRelativePosition(row, col)
+
+   local partnerRow, partnerCol = self:getConnectedCell(row, col)
+   local partner = self.matrix[partnerRow][partnerCol]
+
+   -- Find the right capsule sprite in the capsulePool collection
+   local capsuleKey = self:getCapsuleKey(cell.color, partner.color)
+
+   -- Determine orientation
+   local capsule = self.capsulePool[capsuleKey]
+   capsule:setPosition(relativeX, relativeY)
+   capsule:setOrientation(cell.connection)
+   capsule:draw()
 end
 
 function Playfield:draw()
    local fieldX, fieldY = self:getPosition()
    love.graphics.draw(self.texture.image, fieldX, fieldY)
 
+   -- Keep track of which cells we've already drawn as part of capsules so we don't draw then again
+   -- Also avoids drawing capsules in the wrong order (BLUE->RED instead of RED->BLUE)
+   local drawnCells = {}
+
    -- Draw static pills in the grid
    for row = 1, #self.matrix do
       for col = 1, #self.matrix[row] do
          local cell = self.matrix[row][col]
 
-         if cell.color ~= CellColor.EMPTY then
-            if cell.connection == PillConnection.NONE then
-               self:drawSinglePill(row, col, cell.color)
-            else
-               drawConnectedPill(row, col, cell.color, cell.connection)
+         if not drawnCells[row .. ',' .. col] then
+            if cell.color ~= CellColor.EMPTY then
+               if cell.connection == PillConnection.NONE then
+                  self:drawSinglePill(row, col, cell.color)
+                  drawnCells[row .. ',' .. col] = true
+               else
+                  self:drawCapsule(row, col, cell)
+                  -- Mark both cells as drawn
+                  drawnCells[row .. ',' .. col] = true
+                  local partnerRow, partnerCol = self:getConnectedCell(row, col)
+                  drawnCells[partnerRow .. ',' .. partnerCol] = true
+               end
             end
          end
       end

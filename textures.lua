@@ -14,7 +14,7 @@ Textures = {}
 ---@field quadHeight number
 
 function Textures.load()
-   local capsulesText = love.graphics.newImage('assets/textures/vertical_pills.png')
+   local capsulesText = love.graphics.newImage('assets/textures/pills_vertical.png')
    local pillsText = love.graphics.newImage('assets/textures/round_pill.png')
    local playfieldText = love.graphics.newImage('assets/textures/playfield.png')
 
