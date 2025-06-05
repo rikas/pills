@@ -1,7 +1,11 @@
 ---@class Textures
----@field capsules SpriteTextureTable
+---@field capsules CapsuleTextures
 ---@field pills SpriteTextureTable
 Textures = {}
+
+---@class CapsuleTextures
+---@field vertical SpriteTextureTable
+---@field horizontal SpriteTextureTable
 
 ---@class TextureTable
 ---@field image love.Image
@@ -14,18 +18,28 @@ Textures = {}
 ---@field quadHeight number
 
 function Textures.load()
-   local capsulesText = love.graphics.newImage('assets/textures/pills_vertical.png')
+   local capsulesVText = love.graphics.newImage('assets/textures/pills_vertical.png')
+   local capsulesHText = love.graphics.newImage('assets/textures/pills_horizontal.png')
    local pillsText = love.graphics.newImage('assets/textures/round_pill.png')
    local playfieldText = love.graphics.newImage('assets/textures/playfield.png')
 
-   ---@type SpriteTextureTable
    Textures.capsules = {
-      image = capsulesText,
-      height = capsulesText:getHeight(),
-      width = capsulesText:getWidth(),
-      spacing = 1,
-      quadWidth = 7,
-      quadHeight = 15,
+      vertical = {
+         image = capsulesVText,
+         height = capsulesVText:getHeight(),
+         width = capsulesVText:getWidth(),
+         spacing = 1,
+         quadWidth = 7,
+         quadHeight = 15,
+      },
+      horizontal = {
+         image = capsulesHText,
+         height = capsulesHText:getHeight(),
+         width = capsulesHText:getWidth(),
+         spacing = 1,
+         quadWidth = 15,
+         quadHeight = 7,
+      },
    }
 
    ---@type SpriteTextureTable

@@ -5,6 +5,7 @@ local Utils = require('utils')
 local MainMenuScene = require('scenes/main_menu_scene')
 local GameScene = require('scenes/game_scene')
 local Pill = require('pill')
+local Capsules = require('capsules')
 
 gameCanvas = nil
 
@@ -21,6 +22,9 @@ function love.load()
 
    -- This needs to be called before using any textures
    Textures.load()
+
+   -- Load all capsule sprites (horizontal and vertical)
+   Capsules.load()
 
    game_scene = GameScene.new()
    game_scene:load()
@@ -61,7 +65,7 @@ function love.keypressed(key)
    end
 
    -- main_menu_scene:keypressed(key)
-   -- game_scene:keypressed(key)
+   game_scene:keypressed(key)
 end
 
 function love.draw()

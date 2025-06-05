@@ -56,7 +56,7 @@ function Playfield:init()
       end
    end
 
-   self.matrix = Utils.generate_matrix(Game.MATRIX_ROWS, Game.MATRIX_COLUMNS, BASE_CELL)
+   self.matrix = Utils.generate_matrix(Game.BOTTLE_HEIGHT, Game.BOTTLE_WIDTH, BASE_CELL)
 
    self.matrix[1][1] = {
       color = CellColor.YELLOW,
@@ -97,7 +97,7 @@ function Playfield:shouldPillFall(row, col)
 
    -- Single pill, simple check - the cell below should be empty
    if cell.connection == PillConnection.NONE then
-      if row < Game.MATRIX_ROWS then
+      if row < Game.BOTTLE_HEIGHT then
          local cellBellow = self.matrix[row + 1] and self.matrix[row + 1][col]
          return cellBellow.color == CellColor.EMPTY
       end
@@ -113,14 +113,14 @@ function Playfield:shouldPillFall(row, col)
          return false
       end
 
-      local canFallThis = row < Game.MATRIX_ROWS and self:isEmpty(row + 1, col)
-      local canFallPartner = partnerRow < Game.MATRIX_ROWS
+      local canFallThis = row < Game.BOTTLE_HEIGHT and self:isEmpty(row + 1, col)
+      local canFallPartner = partnerRow < Game.BOTTLE_HEIGHT
          and self:isEmpty(partnerRow + 1, partnerCol)
 
       return canFallThis and canFallPartner
    elseif cell.connection == PillConnection.TOP then
       local bottomRow, bottomCol = self:getConnectedCell(row, col)
-      return bottomRow < Game.MATRIX_ROWS and self:isEmpty(bottomRow + 1, bottomCol)
+      return bottomRow < Game.BOTTLE_HEIGHT and self:isEmpty(bottomRow + 1, bottomCol)
    end
 
    return false
