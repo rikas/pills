@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="granivore3.css" rel="stylesheet">
+    <script type="text/javascript" src="granivore3.js"></script>
+  </head>
+  <body>
+    <div id="SearchContainer">
+      <div id="Header">
+        <h1 class="Title">
+          Granivore&#x1f331;&#x1f48a;
+        </h1>
+        <h2 class="Subtitle">
+          Dr. Mario Seed Finder
+        </h2>
+      </div>
+      <div id="Search">
+        <div id="SearchFields">
+          <div class="SearchField">
+            <label for="Level">
+              Level:
+            </label>
+            <input type="number" id="Level" min="0" max="20" value="20" />
+          </div>
+          <div class="SearchField">
+            <label for="Seed">
+              Seed:
+            </label>
+          <input type="text" id="Seed" pattern="[a-fA-F0-9]" maxlength="4" />
+          </div>
+        </div>
+        <div id="SearchByVirus">
+          <div id="Palette">
+            <button class="Button" id="Reset">RESET</button>
+          </div>
+          <div id="SearchBottle" class="Bottle">
+          </div>
+        </div>
+      </div>
+      <div># found: <span id="NumFound">0</span></div>
+      <label for="NumToRender">
+        # to show:
+      </label>
+      <input type="number" id="NumToRender" min="1" value="10" />
+    </div>
+    <div id="Rendered">
+      <div id="RenderedSeeds"></div>
+    </div>
+  </body>
+</html>

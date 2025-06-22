@@ -15,6 +15,13 @@ CellColor = {
    BLUE = 3,
 }
 
+---@enum CellType
+CellType = {
+   EMPTY = 0,
+   PILL = 1,
+   VIRUS = 2,
+}
+
 ---@enum PillConnection
 PillConnection = {
    NONE = 0,
@@ -23,3 +30,5 @@ PillConnection = {
    TOP = 3,
    BOTTOM = 4,
 }
+
+---@alias CapsuleOrientation 'horizontal' | 'vertical'

@@ -1,5 +1,4 @@
 local Utils = require('utils')
----@alias CapsuleOrientation 'horizontal' | 'vertical'
 
 ---@class Capsules
 local Capsules = {

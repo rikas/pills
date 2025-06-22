@@ -22,6 +22,7 @@ function Textures.load()
    local capsulesHText = love.graphics.newImage('assets/textures/pills_horizontal.png')
    local pillsText = love.graphics.newImage('assets/textures/round_pill.png')
    local playfieldText = love.graphics.newImage('assets/textures/playfield.png')
+   local virusText = love.graphics.newImage('assets/textures/virus.png')
 
    Textures.capsules = {
       vertical = {
@@ -40,6 +41,16 @@ function Textures.load()
          quadWidth = 15,
          quadHeight = 7,
       },
+   }
+
+   ---@type SpriteTextureTable
+   Textures.viruses = {
+      image = virusText,
+      height = virusText:getHeight(),
+      width = virusText:getWidth(),
+      spacing = 1,
+      quadWidth = 7,
+      quadHeight = 7,
    }
 
    ---@type SpriteTextureTable

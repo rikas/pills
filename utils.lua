@@ -49,15 +49,15 @@ function Utils.dump(o)
 end
 
 --- Initializes a matrix with n rows and m columns and fills it with the initial value.
----@param n number How many rows
----@param m number How many columns
+---@param columns number How many columns (width)
+---@param rows number How many rows (height)
 ---@param initial_value any The value to fill the matrix with
 ---@return table
-function Utils.generate_matrix(m, n, initial_value)
+function Utils.generate_matrix(columns, rows, initial_value)
    local matrix = {}
-   for i = 1, m do
+   for i = 1, rows do
       matrix[i] = {}
-      for j = 1, n do
+      for j = 1, columns do
          matrix[i][j] = initial_value -- Initialize with zero or any default value
       end
    end

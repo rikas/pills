@@ -1,7 +1,7 @@
 require('globals')
 
 function love.conf(t)
-   t.window.title = 'Hospital Madness'
+   t.window.title = 'Pill Panic'
    t.window.width = 800
    t.window.height = 600
    t.window.resizable = false

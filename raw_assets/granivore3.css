@@ -1,0 +1,202 @@
+body {
+  color: #333;
+  font-family: sans-serif;
+}
+
+#Header {
+  margin: 20px 0;
+}
+
+.Title,
+.Subtitle {
+  margin: 0;
+}
+
+.Subtitle {
+  color: #666;
+}
+
+#SearchContainer {
+  position: fixed;
+  top: 0;
+}
+
+#NumFound {
+  font-weight: bold;
+}
+
+#NumToRender {
+  max-width: 100px;
+}
+
+#Rendered {
+  margin-left: 270px;
+}
+
+.Bottle {
+  background-color: black;
+  border: 1px solid#ccc;
+  height: 256px;
+  position: relative;
+  width: 128px;
+}
+
+#Search {
+  align-items: start;
+  display: flex;
+  margin-bottom: 20px;
+  flex-direction: column;
+}
+
+#SearchFields {
+  display: flex;
+}
+
+.SearchField {
+  display: flex;
+  flex-direction: column;
+}
+
+#Seed.Invalid {
+  border-color: red;
+  outline: 0;
+}
+
+#SearchByVirus {
+  display: flex;
+}
+
+#Palette {
+  display: flex;
+  flex-direction: column;
+  margin-right: 10px;
+}
+
+.Hidden {
+  display: none;
+}
+
+#Reset {
+  background-color: #666;
+  margin-top: 5px;
+}
+
+.Button {
+  border: 0;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  padding: 5px;
+}
+
+.Button:not(:last-child) {
+  margin-bottom: 5px;
+}
+
+.Cell {
+  background-color: #333;
+  border: 1px solid white;
+  height: 14px;
+  position: absolute;
+  width: 14px;
+}
+
+.CellHover:hover {
+  background-color: #666;
+}
+
+.Color0 {
+  background-color: #ff0;
+  color: black;
+}
+.Color0Hover:hover {
+  background-color: #990;
+}
+
+.Color1 {
+  background-color: #f00;
+  color: white;
+}
+.Color1Hover:hover {
+  background-color: #900;
+}
+
+.Color2 {
+  background-color: #00f;
+  color: white;
+}
+.Color2Hover:hover {
+  background-color: #009;
+}
+
+#RenderedSeeds {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.BottleAndCapsulesContainer {
+  display: flex;
+}
+
+.SeedContainer {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 1px 1px 5px #ccc;
+  margin-bottom: 10px;
+  margin-right: 10px;
+  padding: 10px;
+}
+
+.Capsules {
+  align-content: flex-start;
+  background-color: black;
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 90px;
+}
+
+.Capsule {
+  display: flex;
+  justify-content: space-between;
+  height: 8px;
+  margin-bottom: 1px;
+  margin-right: 1px;
+  width: 17px;
+}
+
+.Capsule > div {
+  border-radius: 3px;
+  height: 8px;
+  width: 8px;
+}
+
+.Capsule > div:first-child {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.Capsule > div:last-child {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.Seed {
+  margin-top: 4px;
+}
+
+.Stats {
+  align-items: center;
+  display: flex;
+}
+
+.Stats > div {
+  margin-right: 4px;
+}
+
+.Stat {
+  border-radius: 4px;
+  font-weight: 700;
+  padding: 4px;
+}

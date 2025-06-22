@@ -66,6 +66,8 @@ function hideToast() {
   toastEl.classList.add("Hidden");
 }
 
+let a = 0;
+
 function generateOutput(seed, level) {
   const originalSeed = seed.slice();
   const capsules = [];
@@ -91,17 +93,21 @@ function generateViruses(viruses, seed, level = 20) {
   const cappedLevel = Math.min(20, level);
   let virusesRemaining = (cappedLevel + 1) * 4;
   const maxRow = getMaxRow(cappedLevel);
+
   outerLoop: while (virusesRemaining > 0) {
     let row;
     do {
-      seed = rotateBytes(seed);
+      seed = rotateBytes(seed, true);
     } while ((row = seed[0] % BOTTLE_HEIGHT) > maxRow);
     const y = BOTTLE_HEIGHT - 1 - row;
     const x = seed[1] % BOTTLE_WIDTH;
     let position = y * BOTTLE_WIDTH + x;
     let color = virusesRemaining % 4;
+    // console.log(
+    //   "- Position: " + position + ", seed: " + seed[0] + "," + seed[1],
+    // );
     if (color === 3) {
-      seed = rotateBytes(seed);
+      seed = rotateBytes(seed, true);
       color = VIRUS_COLOR_TABLE[seed[1] % 16];
     }
     adjustment: while (true) {
@@ -158,6 +164,7 @@ function generateViruses(viruses, seed, level = 20) {
           color = ITEM_COLORS.RED;
         }
       }
+      // console.log("Added position " + position + " with color " + color);
       viruses[position] = color;
       virusesRemaining--;
       break;
@@ -182,7 +189,7 @@ function getMaxLevelOfMaxRow(level) {
   }
 }
 
-function rotateBytes(seed) {
+function rotateBytes(seed, print = false) {
   let carry0 = 0;
   let carry1 = 0;
   if (((seed[0] & 2) ^ (seed[1] & 2)) != 0) {
@@ -193,6 +200,10 @@ function rotateBytes(seed) {
     carry0 = seed[x] & 1;
     seed[x] = (carry1 << 7) | (seed[x] >> 1);
     carry1 = carry0;
+  }
+
+  if (print) {
+    // console.log("Current seed: " + seed[0] + "," + seed[1]);
   }
   return seed;
 }
